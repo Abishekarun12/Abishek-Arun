@@ -36,7 +36,8 @@ class PermissionController extends Controller implements HasMiddleware
      */
     public function create()
     {
-        return view('permission.create');
+        $guards = array_keys(config('auth.guards'));
+        return view('permission.create',compact('guards'));
     }
 
     /**
@@ -55,6 +56,7 @@ class PermissionController extends Controller implements HasMiddleware
 
             $permission = new Permission();
             $permission->name = $request->permission;
+            $permission->guard_name = $request->guard_name;
             $permission->save();
 
             return response()->json(['message' => 'Permission added successfully!'], 201);
@@ -77,7 +79,7 @@ class PermissionController extends Controller implements HasMiddleware
      */
     public function edit(string $id)
     {
-        $permission = Permission::findById($id);
+        $permission = Permission::find($id);
         return view('permission.edit',compact('permission'));
     }
 
@@ -95,7 +97,7 @@ class PermissionController extends Controller implements HasMiddleware
             if($validator->fails()){
                 return response()->json(['errors' => $validator->messages()], 422);
             }
-            $permission = Permission::findById($request->id);
+            $permission = Permission::find($request->id);
             $permission->name = $request->permission;
             $permission->update();
             return response()->json(['message' => 'Permission Updated successfully!'], 201);

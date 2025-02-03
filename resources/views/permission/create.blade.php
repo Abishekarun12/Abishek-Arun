@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <form id="permission_form" action="{{route('permission.store')}}">
+                    <form id="permission_form" action="{{ route('permission.store') }}">
                         @csrf
                         <!-- Permission Name -->
                         <div>
@@ -17,7 +17,22 @@
                             <x-text-input id="permission" class="block mt-1 w-full" type="text" name="permission" :value="old('permission')" required autofocus autocomplete="permission" />
                             <x-input-error :messages="$errors->get('permission')" class="mt-2" />
                         </div>
+
+                        <!-- Guard Name Dropdown -->
+                        <div class="mt-4">
+                            <x-input-label for="guard_name" :value="__('Guard Name')" />
+                            <select id="guard_name" name="guard_name" class="block mt-1 w-full" required>
+                                @foreach ($guards as $guard)
+                                    <option value="{{ $guard }}" {{ old('guard_name') == $guard ? 'selected' : '' }}>
+                                        {{ ucfirst($guard) }}  
+                                    </option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('guard_name')" class="mt-2" />
+                        </div>
+
                         <br>
+
                         <div style="padding-left: 66rem">
                             <x-primary-button class="ms-2">
                                 {{ __('Create') }}
@@ -29,6 +44,7 @@
         </div>
     </div>
 </x-app-layout>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -53,7 +69,6 @@
                     } else {
                         toastr.success("Permission Added Successfully!");
                     }
-                    // $("#refresh_div").load(location.href + " #refresh_div");
                 },
                 error: function(xhr, status, error) {
                     let errorMsg = "An error occurred. Please try again.";
@@ -69,4 +84,3 @@
         });
     });
 </script>
-

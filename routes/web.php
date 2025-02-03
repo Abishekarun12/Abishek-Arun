@@ -1,24 +1,35 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\BranchController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\fController;
+
+use App\Http\Controllers\BranchUserContoller;
+use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
+Route::get('/', function () {
+    return view('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// if (!Auth::check()) {
-//     return redirect()->route('logout');
-// }
+Route::get('/branch-login',[AuthenticatedSessionController::class,'create'])->name('branch.login');
+Route::post('/branch-login',[AuthenticatedSessionController::class,'store'])->name('branch.store.login');
 
-// Route::prefix('admin')->middleware(['auth', 'check.user.type'])->group(function () {
-    Route::middleware(['auth', 'check_user.type'])->group(function () {
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -30,30 +41,28 @@ Route::get('/dashboard', function () {
     Route::post('/permission/update',[PermissionController::class,'update'])->name('permission.update');
     Route::delete('/permission/delete/{id}',[PermissionController::class,'destroy'])->name('permission.destroy');
 
-    Route::get('/role',[RoleController::class,'index'])->name('role.list');
-    Route::get('/role/create',[RoleController::class,'create'])->name('role.create');
-    Route::post('/role/store',[RoleController::class,'store'])->name('role.store');
-    Route::get('/role/edit/{id}',[RoleController::class,'edit'])->name('role.edit');
-    Route::post('/role/update',[RoleController::class,'update'])->name('role.update');
-    Route::delete('/role/delete/{id}',[RoleController::class,'destroy'])->name('role.destroy');
+    Route::get('/role',[RoleController::class,'index'])->name('web_role.list');
+    Route::get('/role/create',[RoleController::class,'create'])->name('web_role.create');
+    Route::post('/role/store',[RoleController::class,'store'])->name('web_role.store');
+    Route::get('/role/edit/{id}',[RoleController::class,'edit'])->name('web_role.edit');
+    Route::post('/role/update/{id}',[RoleController::class,'update'])->name('web_role.update');
+    Route::delete('/role/delete/{id}',[RoleController::class,'destroy'])->name('web_role.destroy');
 
 
-    Route::get('/article',[ArticleController::class,'index'])->name('article.list');
-    Route::get('/article/create',[ArticleController::class,'create'])->name('article.create');
-    Route::post('/article/store',[ArticleController::class,'store'])->name('article.store');
-    Route::get('/article/edit/{id}',[ArticleController::class,'edit'])->name('article.edit');
-    Route::post('/article/update',[ArticleController::class,'update'])->name('article.update');
-    Route::delete('/article/delete/{id}',[ArticleController::class,'destroy'])->name('article.destroy');
-
-    Route::get('/user',[UserController::class,'index'])->name('user.list');
-    Route::get('/user/create',[UserController::class,'create'])->name('user.create');
-    Route::post('/user/store',[UserController::class,'store'])->name('user.store');
-    Route::get('/user/edit/{id}',[UserController::class,'edit'])->name('user.edit');
-    Route::post('/user/update',[UserController::class,'update'])->name('user.update');
-    Route::delete('/user/delete/{id}',[UserController::class,'destroy'])->name('user.destroy');
+    Route::get('/article',[ArticleController::class,'index'])->name('articles.list');
+    Route::get('/article/create',[ArticleController::class,'create'])->name('articles.create');
+    Route::post('/article/store',[ArticleController::class,'store'])->name('articles.store');
+    Route::get('/article/edit/{id}',[ArticleController::class,'edit'])->name('articles.edit');
+    Route::post('/article/update',[ArticleController::class,'update'])->name('articles.update');
+    Route::delete('/article/delete/{id}',[ArticleController::class,'destroy'])->name('articles.destroy');
 
 });
+Route::get('/session', function () {
+    Session::flush();
+    return "Session Cleared!";
+    // return redirect()->route('admin.auth.logout');
+});
+
 
 require __DIR__.'/auth.php';
 require __DIR__.'/admin-auth.php';
-

@@ -84,7 +84,7 @@ class RoleController extends Controller implements HasMiddleware
      */
     public function edit(string $id)
     {
-        $roles = Role::findById($id);
+        $roles = Role::find($id);
         $permissions = Permission::orderBy('name', 'ASC')->get();
         $hasPermissions = $roles->permissions->pluck('name');
         return view('role.edit',compact('roles','permissions','hasPermissions'));
@@ -106,7 +106,7 @@ class RoleController extends Controller implements HasMiddleware
                 return response()->json(['errors' => $validator->messages()], 422);
             }
 
-            $role = Role::findById($request->id);
+            $role = Role::find($request->id);
             if (!$role) {
                 return response()->json(['error' => 'Role not found.'], 404);
             }

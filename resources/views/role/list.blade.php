@@ -55,12 +55,18 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                             {{ $role->name }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            @foreach ($role->permissions->sortBy('name') as $permission)
-                                                <span style="color: grey" class="inline-block bg-gray-200 text-gray-800 rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2">
-                                                    {{ $permission->name }}
-                                                </span>
-                                            @endforeach
+                                        <td class="px-6 py-4 whitespace-normal text-sm text-gray-500">
+                                            @php
+                                                $permissions = $role->permissions->sortBy('name');
+                                            @endphp
+
+                                            <div class="flex flex-wrap gap-2 max-h-16 overflow-hidden">
+                                                @foreach ($permissions as $permission)
+                                                    <span class="inline-block bg-gray-200 text-gray-800 rounded-full px-3 py-1 text-sm font-semibold truncate max-w-[120px]">
+                                                        {{ $permission->name }}
+                                                    </span>
+                                                @endforeach
+                                            </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{Carbon\Carbon::parse($role->created_at)->format('M, D, h:m a')}}
