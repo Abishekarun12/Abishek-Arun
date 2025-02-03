@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Admin\Admin;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -50,12 +51,20 @@ class UserController extends Controller implements HasMiddleware
         if($validator->fails()){
             return response()->json(['errors' => $validator->messages()], 422);
         }
+        if($request->role == 'Admin'){
+            $user = new Admin();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = $request->password;
+            $user->save();
+        }else{
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = $request->password;
+            $user->save();
+        }
 
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = $request->password;
-        $user->save();
         $user->syncRoles($request->role);
         return response()->json(['message' => 'User Created successfully!'], 201);
     }
