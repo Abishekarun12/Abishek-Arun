@@ -9,7 +9,8 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <h4>Admin Dashboard Page</h4>
+                    <h4><strong> Admin Dashboard Page</h4> </strong>
+                        {{-- <h4>Guard Name : {{ $tt->roles->pluck('guard_name')->implode("") }}</h4> --}}
 
                     <form method="POST" action="{{ route('admin.logout') }}">
                         @csrf
